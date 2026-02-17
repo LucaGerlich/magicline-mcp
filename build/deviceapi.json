@@ -1,0 +1,1418 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Device API"
+  },
+  "servers": [
+    {
+      "url": "https://open-api-demo.devices.magicline.com",
+      "description": "Demo tenant"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Access",
+      "description": "Here are all the endpoints that are necessary for `GenericCardReader` to be successfully used. This endpoints should be used for device with model `GENERIC_CARD_READER`. The model can be found in response from `getDevices` which was already described in authentication process."
+    },
+    {
+      "name": "Vending",
+      "description": "Here are all the endpoints that are necessary for `GenericVending` to be successfully used. This endpoints should be used for device with model `GENERIC_VENDING_READER`. The model can be found in response from `getDevices` which was already described in authentication process."
+    }
+  ],
+  "paths": {
+    "/open-api/device/cardreader/identification": {
+      "post": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Checks if customer is authorized (dry-run possible)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "description": "You can find more information about identification [here](../../general-information/#access).",
+        "operationId": "cardReaderIdentification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardReaderIdentification"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/CardReaderIdentificationCardNumberExample"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/CardReaderIdentificationQrCodeExample"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/CardReaderIdentificationBarcodeExample"
+                },
+                "example4": {
+                  "$ref": "#/components/examples/CardReaderIdentificationPinExample"
+                },
+                "example5": {
+                  "$ref": "#/components/examples/CardReaderIdentificationWalletPassExample"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK - identification has been successfully executed. You can find more information about identification [here](../../general-information/#access)."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/open-api/device/vending/identification": {
+      "post": {
+        "tags": [
+          "Vending"
+        ],
+        "summary": "Checks if customer is authorized to use vending device",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "description": "You can find more information about identification [here](../../general-information/#identification).",
+        "operationId": "vendingIdentification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendingReaderIdentificationRequest"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/VendingReaderIdentificationCardNumberExample"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/VendingReaderIdentificationQrCodeExample"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/VendingReaderIdentificationBarcodeExample"
+                },
+                "example4": {
+                  "$ref": "#/components/examples/VendingReaderIdentificationPinExample"
+                },
+                "example5": {
+                  "$ref": "#/components/examples/VendingReaderIdentificationWalletPassExample"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK - identification has been successfully executed you can continue with [sale](../vendingSale/) endpoint",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendingReaderIdentificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/open-api/device/vending/sale": {
+      "post": {
+        "tags": [
+          "Vending"
+        ],
+        "summary": "Product sale (dry-run possible)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "description": "This should be conducted post-identification with `shouldExecuteAction = false` in order to execute a dry-run, ensuring that customers can obtain the product, for example has enough credit, etc. If this first request was successful, the product can be dispensed. After the product was sucessfully dispensed, this endpoint needs to be called again with `shouldExecuteAction = true`, which will subsequently lead to the customer being charged. You can find more information about sale [here](../../general-information/#sale)",
+        "operationId": "vendingSale",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendingReaderSaleRequest"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/VendingReaderSaleCardNumberExample"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/VendingReaderSaleQrCodeExample"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/VendingReaderSaleBarcodeExample"
+                },
+                "example4": {
+                  "$ref": "#/components/examples/VendingReaderSalePinExample"
+                },
+                "example5": {
+                  "$ref": "#/components/examples/VendingReaderSaleWalletPassExample"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK - Sale check done",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendingReaderSaleResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK - Customer has been charged"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/open-api/device/vending/revalue": {
+      "post": {
+        "tags": [
+          "Vending"
+        ],
+        "summary": "Top up customer's consumption credit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "description": "This should be used to top up customer's consumption credit.",
+        "operationId": "vendingRevalue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendingReaderRevalue"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/VendingReaderRevalueCardNumberExample"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/VendingReaderRevalueQrCodeExample"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/VendingReaderRevalueBarcodeExample"
+                },
+                "example4": {
+                  "$ref": "#/components/examples/VendingReaderRevaluePinExample"
+                },
+                "example5": {
+                  "$ref": "#/components/examples/VendingReaderRevalueWalletPassExample"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "OK - The customer's consumption credit has been topped up."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/open-api/device/time/price": {
+      "get": {
+        "tags": [
+          "Time"
+        ],
+        "summary": "Get available intervals with prices",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "description": "Returns a list of available time intervals with their corresponding prices. This allows the device to display the options to the customer.",
+        "operationId": "timePrice",
+        "responses": {
+          "200": {
+            "description": "OK - List of available time intervals with prices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeReaderPriceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/open-api/device/time/identification": {
+      "post": {
+        "tags": [
+          "Time"
+        ],
+        "summary": "Checks if customer is authorized to use time device",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "description": "You can find more information about identification [here](../../general-information/#identification).",
+        "operationId": "timeIdentification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TimeReaderIdentificationRequest"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/TimeReaderIdentificationCardNumberExample"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/TimeReaderIdentificationQrCodeExample"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/TimeReaderIdentificationBarcodeExample"
+                },
+                "example4": {
+                  "$ref": "#/components/examples/TimeReaderIdentificationPinExample"
+                },
+                "example5": {
+                  "$ref": "#/components/examples/TimeReaderIdentificationWalletPassExample"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK - identification has been successfully executed you can continue with [usage](../timeUsage/) endpoint",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeReaderIdentificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/open-api/device/time/usage": {
+      "post": {
+        "tags": [
+          "Time"
+        ],
+        "summary": "Benefit usage (dry-run possible)",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "description": "This should be conducted post-identification with `shouldExecuteAction = false` in order to execute a dry-run, ensuring that customers can obtain the benefit, for example has contingent, etc. If this first request was successful, the benefit can be enabled. After the benefit was successfully enabled, this endpoint needs to be called again with `shouldExecuteAction = true`, which will subsequently lead to the customer being charged or benefit being used. You can find more information about usage [here](../../general-information/#usage)",
+        "operationId": "timeUsage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TimeReaderUsageRequest"
+              },
+              "examples": {
+                "example1": {
+                  "$ref": "#/components/examples/TimeReaderUsageCardNumberExample"
+                },
+                "example2": {
+                  "$ref": "#/components/examples/TimeReaderUsageQrCodeExample"
+                },
+                "example3": {
+                  "$ref": "#/components/examples/TimeReaderUsageBarcodeExample"
+                },
+                "example4": {
+                  "$ref": "#/components/examples/TimeReaderUsagePinExample"
+                },
+                "example5": {
+                  "$ref": "#/components/examples/TimeReaderUsageWalletPassExample"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK - Usage check done",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeReaderUsageResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "OK - Customer has been charged"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "AcceptLanguage": {
+        "name": "Accept-Language",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        },
+        "description": "More information about the header can be found [here](../../general-information/#header-accept-language).",
+        "example": "de",
+        "required": false
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "description": "Bearer token which you received by calling [activate](../../openapi/openapi/devices#activateDevice)",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "oauth2"
+      }
+    },
+    "schemas": {
+      "QrCodeContent": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "QR_CODE"
+          },
+          "value": {
+            "type": "string",
+            "description": "Read the QrCode and send the content. There are two possible contents of a QR Code Json or simple string simple (`\"PSZEYAZ7\"`)",
+            "example": "{\"uuid\":\"f8017d3d-1ab6-467d-b57d-0328e7978906\",\"customer_number\":\"1-10003\",\"tenant\":\"tenant\"}"
+          }
+        }
+      },
+      "BarcodeContent": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "BARCODE"
+          },
+          "value": {
+            "type": "string",
+            "description": "Read the Barcode and send the content",
+            "example": "PSZEYAZ7"
+          }
+        }
+      },
+      "PinContent": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "PIN"
+          },
+          "value": {
+            "type": "string",
+            "description": "Personal identification number",
+            "example": "12378"
+          }
+        }
+      },
+      "WalletPassContent": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "WALLET_PASS"
+          },
+          "value": {
+            "type": "string",
+            "description": "Wallet pass identifier",
+            "example": "dfdd464b-04e8-4322-b260-a04beac6293c"
+          }
+        }
+      },
+      "CardNumberContent": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "NUMBER"
+          },
+          "value": {
+            "type": "string",
+            "description": "Card number",
+            "example": "1233588160"
+          },
+          "format": {
+            "type": "string",
+            "default": "DECIMAL",
+            "enum": [
+              "DECIMAL",
+              "HEX_MSB",
+              "HEX_LSB"
+            ],
+            "description": "In which format the card number value was provided. All of the following examples represent the same card number\n- `DECIMAL` - Card number is interpreted as string of decimal numbers.\n  - Example : `\"1173673668653440\"`\n- `HEX_MSB` - Card number is interpreted as hex string using big-endian (from most significant to least significant byte) order.\n   - Example : `\"042b73321a3180\"`\n- `HEX_LSB` - Card number is interpreted as hex string using little-endian (from least significant to most significant byte) order.\n   - Example : `\"80311a32732b04\"`\n"
+          }
+        }
+      },
+      "CardReaderIdentification": {
+        "required": [
+          "identification"
+        ],
+        "type": "object",
+        "properties": {
+          "identification": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CardNumberContent"
+              },
+              {
+                "$ref": "#/components/schemas/BarcodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/QrCodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/PinContent"
+              },
+              {
+                "$ref": "#/components/schemas/WalletPassContent"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "NUMBER": "#/components/schemas/CardNumberContent",
+                "QR_CODE": "#/components/schemas/QrCodeContent",
+                "BARCODE": "#/components/schemas/BarcodeContent",
+                "PIN": "#/components/schemas/PinContent",
+                "WALLET_PASS": "#/components/schemas/WalletPassContent"
+              }
+            }
+          },
+          "shouldExecuteAction": {
+            "type": "boolean",
+            "default": true,
+            "description": "In a dry run, when the value is set to false, you will receive a validation result without customer being checked into the system. Learn more about it [here](../../general-information/#vending).",
+            "example": true
+          }
+        }
+      },
+      "VendingReaderIdentificationRequest": {
+        "required": [
+          "identification",
+          "transactionId"
+        ],
+        "type": "object",
+        "properties": {
+          "identification": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CardNumberContent"
+              },
+              {
+                "$ref": "#/components/schemas/BarcodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/QrCodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/PinContent"
+              },
+              {
+                "$ref": "#/components/schemas/WalletPassContent"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "NUMBER": "#/components/schemas/CardNumberContent",
+                "QR_CODE": "#/components/schemas/QrCodeContent",
+                "BARCODE": "#/components/schemas/BarcodeContent",
+                "PIN": "#/components/schemas/PinContent",
+                "WALLET_PASS": "#/components/schemas/WalletPassContent"
+              }
+            }
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique ID of the transaction (you have to generate it)",
+            "example": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+          }
+        }
+      },
+      "VendingReaderIdentificationResponse": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "If customer is not authorized then it contains message with reason",
+            "example": ""
+          },
+          "authorized": {
+            "type": "boolean",
+            "description": "If customer is authorized then is allowed to use the device",
+            "example": true
+          },
+          "consumptionCredit": {
+            "type": "number",
+            "description": "Customers consumption credit",
+            "example": 6.4
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique ID of the transaction",
+            "example": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+          }
+        }
+      },
+      "VendingReaderSaleRequest": {
+        "required": [
+          "identification",
+          "transactionId",
+          "productId",
+          "price"
+        ],
+        "type": "object",
+        "properties": {
+          "identification": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CardNumberContent"
+              },
+              {
+                "$ref": "#/components/schemas/BarcodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/QrCodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/PinContent"
+              },
+              {
+                "$ref": "#/components/schemas/WalletPassContent"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "NUMBER": "#/components/schemas/CardNumberContent",
+                "QR_CODE": "#/components/schemas/QrCodeContent",
+                "BARCODE": "#/components/schemas/BarcodeContent",
+                "PIN": "#/components/schemas/PinContent",
+                "WALLET_PASS": "#/components/schemas/WalletPassContent"
+              }
+            }
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique ID of the transaction (you have to generate it)",
+            "example": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+          },
+          "productId": {
+            "type": "string",
+            "description": "Shelf where the product is located",
+            "example": "1"
+          },
+          "price": {
+            "type": "number",
+            "description": "Price of the product according to vending machine. If the price is different than in Magicline then the request will be rejected",
+            "example": 1.29
+          },
+          "shouldExecuteAction": {
+            "type": "boolean",
+            "default": true,
+            "description": "In a dry run, when the value is set to false, you will receive a validation result without customer being charged. Learn more about it [here](../../general-information/#vending).",
+            "example": true
+          }
+        }
+      },
+      "VendingReaderSaleResponse": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "If customer is not authorized then it contains message with reason",
+            "example": ""
+          },
+          "authorized": {
+            "type": "boolean",
+            "description": "If customer is authorized then is allowed to buy/use product",
+            "example": true
+          },
+          "consumptionCredit": {
+            "type": "number",
+            "description": "Customers consumption credit",
+            "example": 6.4
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique ID of the transaction (you have to generate it)",
+            "example": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+          },
+          "price": {
+            "type": "number",
+            "description": "Price of the product",
+            "example": 1.29
+          }
+        }
+      },
+      "VendingReaderRevalue": {
+        "required": [
+          "identification",
+          "transactionId",
+          "amount"
+        ],
+        "type": "object",
+        "properties": {
+          "identification": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CardNumberContent"
+              },
+              {
+                "$ref": "#/components/schemas/BarcodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/QrCodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/PinContent"
+              },
+              {
+                "$ref": "#/components/schemas/WalletPassContent"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "NUMBER": "#/components/schemas/CardNumberContent",
+                "QR_CODE": "#/components/schemas/QrCodeContent",
+                "BARCODE": "#/components/schemas/BarcodeContent",
+                "PIN": "#/components/schemas/PinContent",
+                "WALLET_PASS": "#/components/schemas/WalletPassContent"
+              }
+            }
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Unique ID of the transaction (you have to generate it)",
+            "example": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount customer wats to top up his consumption credit",
+            "example": 5
+          }
+        }
+      },
+      "TimeReaderPriceResponse": {
+        "properties": {
+          "selection": {
+            "type": "array",
+            "description": "List of available time intervals with their corresponding prices.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "durationInSeconds": {
+                  "type": "integer",
+                  "description": "Duration of the interval in seconds.",
+                  "example": 300
+                },
+                "price": {
+                  "$ref": "#/components/schemas/Money"
+                }
+              }
+            }
+          }
+        }
+      },
+      "TimeReaderIdentificationRequest": {
+        "required": [
+          "identification"
+        ],
+        "type": "object",
+        "properties": {
+          "identification": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CardNumberContent"
+              },
+              {
+                "$ref": "#/components/schemas/BarcodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/QrCodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/PinContent"
+              },
+              {
+                "$ref": "#/components/schemas/WalletPassContent"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "NUMBER": "#/components/schemas/CardNumberContent",
+                "QR_CODE": "#/components/schemas/QrCodeContent",
+                "BARCODE": "#/components/schemas/BarcodeContent",
+                "PIN": "#/components/schemas/PinContent",
+                "WALLET_PASS": "#/components/schemas/WalletPassContent"
+              }
+            }
+          }
+        }
+      },
+      "TimeReaderIdentificationResponse": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "If customer is not authorized then it contains message with reason",
+            "example": ""
+          },
+          "authorized": {
+            "type": "boolean",
+            "description": "If customer is authorized then is allowed to use the device",
+            "example": true
+          }
+        }
+      },
+      "TimeReaderUsageRequest": {
+        "required": [
+          "identification"
+        ],
+        "type": "object",
+        "properties": {
+          "identification": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CardNumberContent"
+              },
+              {
+                "$ref": "#/components/schemas/BarcodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/QrCodeContent"
+              },
+              {
+                "$ref": "#/components/schemas/PinContent"
+              },
+              {
+                "$ref": "#/components/schemas/WalletPassContent"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "NUMBER": "#/components/schemas/CardNumberContent",
+                "QR_CODE": "#/components/schemas/QrCodeContent",
+                "BARCODE": "#/components/schemas/BarcodeContent",
+                "PIN": "#/components/schemas/PinContent",
+                "WALLET_PASS": "#/components/schemas/WalletPassContent"
+              }
+            }
+          },
+          "durationInSeconds": {
+            "type": "integer",
+            "description": "Duration of the benefit usage in seconds.",
+            "example": 30
+          },
+          "shouldExecuteAction": {
+            "type": "boolean",
+            "default": true,
+            "description": "In a dry run, when the value is set to false, you will receive a validation result without customer being charged. Learn more about it [here](../../general-information/#vending).",
+            "example": true
+          }
+        }
+      },
+      "TimeReaderUsageResponse": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "If customer is not authorized then it contains message with reason",
+            "example": ""
+          },
+          "authorized": {
+            "type": "boolean",
+            "description": "If customer is authorized then is allowed to buy/use product",
+            "example": true
+          },
+          "price": {
+            "$ref": "#/components/schemas/Money"
+          }
+        }
+      },
+      "Money": {
+        "type": "object",
+        "description": "Represents a financial data",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount of the finance data tuple",
+            "example": 20
+          },
+          "currency": {
+            "type": "string",
+            "format": "ISO 4217",
+            "description": "Currency of the finance data tuple",
+            "example": "EUR"
+          }
+        },
+        "required": [
+          "amount",
+          "currency"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorMessage": {
+            "type": "string",
+            "description": "This message is intended for display to the customer and its language depends on the `Accept-Language` header."
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "traceId": {
+            "type": "string",
+            "description": "This ID will help us provide you with better support. If you encounter any issues and require our assistance, please include this ID or the complete error object in your request."
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request - could be caused due to a variety of issues. More information about the specific problem are in the response body.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not found - could be caused by sending wrong id which could not be found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden - could be caused by missing permission. More information about the specific problem are in the response body.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized - probably wrong or missing access token."
+      },
+      "InternalServerError": {
+        "description": "Internal server error - could be caused by unhandled case",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Service Unavailable - may be due to a [timeout](../../general-information/#database-transaction-timeout) on our end. Please try again later, the issue should resolve within a few minutes.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "examples": {
+      "CardReaderIdentificationCardNumberExample": {
+        "summary": "NUMBER",
+        "value": {
+          "identification": {
+            "type": "NUMBER",
+            "value": "1233588160",
+            "format": "DECIMAL"
+          }
+        }
+      },
+      "CardReaderIdentificationQrCodeExample": {
+        "summary": "QR_CODE",
+        "value": {
+          "identification": {
+            "type": "QR_CODE",
+            "value": "{\"uuid\":\"f8017d3d-1ab6-467d-b57d-0328e7978906\",\"customer_number\":\"1-10003\",\"tenant\":\"tenant\"}"
+          }
+        }
+      },
+      "CardReaderIdentificationBarcodeExample": {
+        "summary": "BARCODE",
+        "value": {
+          "identification": {
+            "type": "BARCODE",
+            "value": "PSZEYAZ7"
+          }
+        }
+      },
+      "CardReaderIdentificationPinExample": {
+        "summary": "PIN",
+        "value": {
+          "identification": {
+            "type": "PIN",
+            "value": "12378"
+          }
+        }
+      },
+      "CardReaderIdentificationWalletPassExample": {
+        "summary": "WALLET_PASS",
+        "value": {
+          "identification": {
+            "type": "WALLET_PASS",
+            "value": "dfdd464b-04e8-4322-b260-a04beac6293c"
+          }
+        }
+      },
+      "VendingReaderIdentificationCardNumberExample": {
+        "summary": "NUMBER",
+        "value": {
+          "identification": {
+            "type": "NUMBER",
+            "value": "1233588160",
+            "format": "DECIMAL"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+        }
+      },
+      "VendingReaderIdentificationQrCodeExample": {
+        "summary": "QR_CODE",
+        "value": {
+          "identification": {
+            "type": "QR_CODE",
+            "value": "{\"uuid\":\"f8017d3d-1ab6-467d-b57d-0328e7978906\",\"customer_number\":\"1-10003\",\"tenant\":\"tenant\"}"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+        }
+      },
+      "VendingReaderIdentificationBarcodeExample": {
+        "summary": "BARCODE",
+        "value": {
+          "identification": {
+            "type": "BARCODE",
+            "value": "PSZEYAZ7"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+        }
+      },
+      "VendingReaderIdentificationPinExample": {
+        "summary": "PIN",
+        "value": {
+          "identification": {
+            "type": "PIN",
+            "value": "12378"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+        }
+      },
+      "VendingReaderIdentificationWalletPassExample": {
+        "summary": "WALLET_PASS",
+        "value": {
+          "identification": {
+            "type": "WALLET_PASS",
+            "value": "dfdd464b-04e8-4322-b260-a04beac6293c"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f"
+        }
+      },
+      "VendingReaderSaleCardNumberExample": {
+        "summary": "NUMBER",
+        "value": {
+          "identification": {
+            "type": "NUMBER",
+            "value": "1233588160",
+            "format": "DECIMAL"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "productId": "1",
+          "price": 1.29,
+          "shouldExecuteAction": true
+        }
+      },
+      "VendingReaderSaleQrCodeExample": {
+        "summary": "QR_CODE",
+        "value": {
+          "identification": {
+            "type": "QR_CODE",
+            "value": "{\"uuid\":\"f8017d3d-1ab6-467d-b57d-0328e7978906\",\"customer_number\":\"1-10003\",\"tenant\":\"tenant\"}"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "productId": "1",
+          "price": 1.29,
+          "shouldExecuteAction": true
+        }
+      },
+      "VendingReaderSaleBarcodeExample": {
+        "summary": "BARCODE",
+        "value": {
+          "identification": {
+            "type": "BARCODE",
+            "value": "PSZEYAZ7"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "productId": "1",
+          "price": 1.29,
+          "shouldExecuteAction": true
+        }
+      },
+      "VendingReaderSalePinExample": {
+        "summary": "PIN",
+        "value": {
+          "identification": {
+            "type": "PIN",
+            "value": "12378"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "productId": "1",
+          "price": 1.29,
+          "shouldExecuteAction": true
+        }
+      },
+      "VendingReaderSaleWalletPassExample": {
+        "summary": "WALLET_PASS",
+        "value": {
+          "identification": {
+            "type": "WALLET_PASS",
+            "value": "dfdd464b-04e8-4322-b260-a04beac6293c"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "productId": "1",
+          "price": 1.29,
+          "shouldExecuteAction": true
+        }
+      },
+      "VendingReaderRevalueCardNumberExample": {
+        "summary": "NUMBER",
+        "value": {
+          "identification": {
+            "type": "NUMBER",
+            "value": "1233588160",
+            "format": "DECIMAL"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "amount": 5.25
+        }
+      },
+      "VendingReaderRevalueQrCodeExample": {
+        "summary": "QR_CODE",
+        "value": {
+          "identification": {
+            "type": "QR_CODE",
+            "value": "{\"uuid\":\"f8017d3d-1ab6-467d-b57d-0328e7978906\",\"customer_number\":\"1-10003\",\"tenant\":\"tenant\"}"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "amount": 5.25
+        }
+      },
+      "VendingReaderRevalueBarcodeExample": {
+        "summary": "BARCODE",
+        "value": {
+          "identification": {
+            "type": "BARCODE",
+            "value": "PSZEYAZ7"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "amount": 5.25
+        }
+      },
+      "VendingReaderRevaluePinExample": {
+        "summary": "PIN",
+        "value": {
+          "identification": {
+            "type": "PIN",
+            "value": "12378"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "amount": 5.25
+        }
+      },
+      "VendingReaderRevalueWalletPassExample": {
+        "summary": "WALLET_PASS",
+        "value": {
+          "identification": {
+            "type": "WALLET_PASS",
+            "value": "dfdd464b-04e8-4322-b260-a04beac6293c"
+          },
+          "transactionId": "4671fde7-bb07-4fe5-aa0e-947d9ccb842f",
+          "amount": 5.25
+        }
+      },
+      "TimeReaderIdentificationCardNumberExample": {
+        "summary": "NUMBER",
+        "value": {
+          "identification": {
+            "type": "NUMBER",
+            "value": "1233588160",
+            "format": "DECIMAL"
+          }
+        }
+      },
+      "TimeReaderIdentificationQrCodeExample": {
+        "summary": "QR_CODE",
+        "value": {
+          "identification": {
+            "type": "QR_CODE",
+            "value": "{\"uuid\":\"f8017d3d-1ab6-467d-b57d-0328e7978906\",\"customer_number\":\"1-10003\",\"tenant\":\"tenant\"}"
+          }
+        }
+      },
+      "TimeReaderIdentificationBarcodeExample": {
+        "summary": "BARCODE",
+        "value": {
+          "identification": {
+            "type": "BARCODE",
+            "value": "PSZEYAZ7"
+          }
+        }
+      },
+      "TimeReaderIdentificationPinExample": {
+        "summary": "PIN",
+        "value": {
+          "identification": {
+            "type": "PIN",
+            "value": "12378"
+          }
+        }
+      },
+      "TimeReaderIdentificationWalletPassExample": {
+        "summary": "WALLET_PASS",
+        "value": {
+          "identification": {
+            "type": "WALLET_PASS",
+            "value": "dfdd464b-04e8-4322-b260-a04beac6293c"
+          }
+        }
+      },
+      "TimeReaderUsageCardNumberExample": {
+        "summary": "NUMBER",
+        "value": {
+          "identification": {
+            "type": "NUMBER",
+            "value": "1233588160",
+            "format": "DECIMAL"
+          },
+          "durationInSeconds": 30,
+          "shouldExecuteAction": true
+        }
+      },
+      "TimeReaderUsageQrCodeExample": {
+        "summary": "QR_CODE",
+        "value": {
+          "identification": {
+            "type": "QR_CODE",
+            "value": "{\"uuid\":\"f8017d3d-1ab6-467d-b57d-0328e7978906\",\"customer_number\":\"1-10003\",\"tenant\":\"tenant\"}"
+          },
+          "durationInSeconds": 30,
+          "shouldExecuteAction": true
+        }
+      },
+      "TimeReaderUsageBarcodeExample": {
+        "summary": "BARCODE",
+        "value": {
+          "identification": {
+            "type": "BARCODE",
+            "value": "PSZEYAZ7"
+          },
+          "durationInSeconds": 30,
+          "shouldExecuteAction": true
+        }
+      },
+      "TimeReaderUsagePinExample": {
+        "summary": "PIN",
+        "value": {
+          "identification": {
+            "type": "PIN",
+            "value": "12378"
+          },
+          "durationInSeconds": 30,
+          "shouldExecuteAction": true
+        }
+      },
+      "TimeReaderUsageWalletPassExample": {
+        "summary": "WALLET_PASS",
+        "value": {
+          "identification": {
+            "type": "WALLET_PASS",
+            "value": "dfdd464b-04e8-4322-b260-a04beac6293c"
+          },
+          "durationInSeconds": 30,
+          "shouldExecuteAction": true
+        }
+      }
+    }
+  }
+}

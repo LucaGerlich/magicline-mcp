@@ -1,0 +1,26 @@
+{
+  "name": "magicline-mcp-server",
+  "version": "1.0.0",
+  "description": "mcp server to comunicate with the magicline api",
+  "license": "MIT",
+  "author": "Luca Gerlich",
+  "type": "module",
+  "main": "index.ts",
+  "bin": {
+    "mcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc && cp src/openapi.json src/connectapi.json src/deviceapi.json src/webhooks.json build/ && chmod 755 build/index.js",
+    "update-openapi": "node scripts/fetch-openapi.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": ["build"],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "typescript": "^5.9.3"
+  }
+}

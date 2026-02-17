@@ -1,0 +1,117 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Webhook Api reference",
+    "description": "[//]: # (The content of this file is used as the descrption of the API)\n"
+  },
+  "tags": [
+    {
+      "name": "Webhook API",
+      "description": "Example webhook endpoint"
+    }
+  ],
+  "paths": {
+    "/webhook": {
+      "post": {
+        "tags": [
+          "Webhook API"
+        ],
+        "summary": "Event call",
+        "operationId": "webhook",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEventRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "description": "Validate apiKey header value with one you received from our team during integration setup.\n",
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY"
+      }
+    },
+    "schemas": {
+      "WebhookEventRequest": {
+        "required": [
+          "entityId",
+          "uuid",
+          "payload"
+        ],
+        "type": "object",
+        "properties": {
+          "entityId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Entity Id bounded to event",
+            "example": 7893459
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique Event UUID"
+          },
+          "payload": {
+            "type": "array",
+            "description": "Currently single element\n",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            }
+          }
+        }
+      },
+      "WebhookEvent": {
+        "required": [
+          "timestamp",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "description": "Milliseconds since Unix Epoch",
+            "example": 1642779144176,
+            "format": "int64"
+          },
+          "type": {
+            "type": "string",
+            "example": "CUSTOMER_CREATED",
+            "description": "Event type. See [event types](../../event-types) for details\n"
+          },
+          "content": {
+            "description": "Additional data specific for event. Currently placeholder for future more complex events. More information in [Event types](../../event-types) section.\n",
+            "type": "object",
+            "example": {
+              "field": "value"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
+}
